@@ -82,7 +82,8 @@ const trn=(x,d)=>{const f=10**d;return Math.sign(x)*Math.floor(Math.abs(x)*f+1e-
 const sd=(a,b)=>b?a/b:0;
 const fmt=(n,d=2)=>isFinite(n)?n.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}):"∞";
 const BIG=[[1e18,"Qi"],[1e15,"Qa"],[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]];
-const big=n=>{const a=Math.abs(n);if(!isFinite(n)||a>=1e21)return"∞";for(const[v,s]of BIG)if(a>=v)return(n/v).toFixed(2)+s;return n.toFixed(2)};
+const AB={K:"ألف",M:"مليون",B:"مليار",T:"تريليون",Qa:"كوادريليون",Qi:"كوينتليون"};
+const big=n=>{const a=Math.abs(n);if(!isFinite(n)||a>=1e21)return"∞";for(const[v,s]of BIG)if(a>=v)return(n/v).toFixed(2)+(S.lang==="ar"?" "+AB[s]:s);return n.toFixed(2)};
 const pct=x=>(x*100).toFixed(2)+"%";
 const cls=n=>n<0?"r":n>0?"g":"";
 // ---- calendar
