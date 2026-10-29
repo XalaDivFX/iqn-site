@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>iQn — IQunomy Strategy</title>
@@ -146,7 +146,8 @@ function calc(){
   c.mods=[["m1",mk(S.want,S.want*S.reinv)],["m2",mk(c.chg,c.chg*S.reinv)],["m3",mk(rl,trn(rl*S.reinv,2))],["m4",mk(r6,trn(r6*S.reinv,2))]];
   return c}
 // ---- ui
-const U=k=>S.u[k];
+const UA={EUR:"يورو",USD:"دولار",EUc:"سنت يورو",USc:"سنت دولار"};
+const U=k=>(S.lang==="ar"&&UA[S.u[k]])||S.u[k];
 const mny=(n,k)=>fmt(n)+" "+U(k);
 const row=(l,v,c="")=>`<tr><td>${l}</td><td class="num ${c}">${v}</td></tr>`;
 const FIELDS=[["start",1],["now",1],["dep",1],["date",0],["egp",1],["eurusd",1],["want",1],["dep0",1],["reinv",1],["mdays",1]];
@@ -206,6 +207,7 @@ function render(){
     S.hol.map((x,i)=>`<tr><td><input data-h="n" data-i="${i}" value="${x.n}"></td><td><input data-h="d" data-i="${i}" type="date" value="${x.d}"></td><td><select data-h="s" data-i="${i}"><option value="f" ${x.s==="f"?"selected":""}>${T("full")}</option><option value="e" ${x.s==="e"?"selected":""}>${T("early")}</option></select></td><td><button data-x="${i}">${T("del")}</button></td></tr>`).join("")+`</table><p><button id="addH">${T("add")}</button></p></div>`;
   }
   o.innerHTML=h;
+  if(S.lang==="ar"){const w=document.createTreeWalker($("#main"),NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())n.nodeValue=n.nodeValue.replace(/(\d)\.(\d)/g,"$1٫$2").replace(/(\d),(?=\d)/g,"$1٬").replace(/[0-9]/g,d=>"٠١٢٣٤٥٦٧٨٩"[d])}
 }
 // ---- events
 document.addEventListener("input",e=>{
@@ -226,15 +228,18 @@ document.addEventListener("click",e=>{
   else if(t.id==="bAr"||t.id==="bEn"){S.lang=t.id==="bAr"?"ar":"en";save();buildInputs();render()}
   else if(t.id==="bPng"||t.id==="bPdf")exp(t.id==="bPdf");
 });
+function say(m){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";e.style.cssText="position:fixed;bottom:16px;inset-inline-start:16px;background:#1a1f26;border:1px solid #3d4651;padding:8px 12px;border-radius:8px;z-index:9";document.body.appendChild(e)}e.textContent=m;clearTimeout(e.t);e.t=setTimeout(()=>e.remove(),7000)}
 async function exp(pdf){
   try{
+    if(!window.html2canvas||(pdf&&!window.jspdf)){say(S.lang==="ar"?"مكتبة التصدير لم تتحمّل — تحقق من الإنترنت":"Export library not loaded — check your connection");return}
+    say(S.lang==="ar"?"جارٍ التصدير…":"Exporting…");
     const dl=(window.claude&&await claude.use("downloads"))||{save:async({filename,data})=>{const a=document.createElement("a");a.href=URL.createObjectURL(data);a.download=filename;document.body.appendChild(a);a.click();a.remove()}};
-    const cv=await html2canvas($("#main"),{backgroundColor:"#0b0d10",scale:1.5});
-    if(!pdf){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await dl.save({filename:"iqn.png",data:b});return}
+    const cv=await html2canvas($("#main"),{backgroundColor:"#0b0d10",scale:1.5,useCORS:true,logging:false,onclone:d=>{const t=d.querySelector("h1");if(t){t.style.background="none";t.style.color="#fff";t.style.webkitTextFillColor="#fff"}}});
+    if(!pdf){const b=await new Promise(r=>cv.toBlob(r,"image/png"));await dl.save({filename:"iqn.png",data:b});say("✓");return}
     const P=new jspdf.jsPDF({orientation:cv.width>cv.height?"l":"p",unit:"px",format:[cv.width,cv.height]});
     P.addImage(cv.toDataURL("image/jpeg",0.92),"JPEG",0,0,cv.width,cv.height);
-    await dl.save({filename:"iqn.pdf",data:P.output("blob")});
-  }catch(err){console.error(err)}
+    await dl.save({filename:"iqn.pdf",data:P.output("blob")});say("✓");
+  }catch(err){say("✗ "+((err&&(err.code||err.message))||err));console.error(err)}
 }
 buildInputs();render();
 </script>
