@@ -54,7 +54,7 @@ ar:{mode:"السوق",forex:"فوركس (عطلات)",crypto:"كريبتو (بد
 tAcc:"لوحة الحساب",tLot:"اللوتات",tMod:"النماذج",tDay:"60 يوم",tHol:"العطلات",
 nowUsd:"الرصيد بالدولار",chg:"نسبة التغيير",profit:"الربح",profitUsd:"الربح بالدولار",depUsd:"الإيداع بالدولار",rc:"التغيير المقرّب",totNow:"الإجمالي الآن",totNowUsd:"الإجمالي بالدولار",wd:"سحب اليوم",wdUsd:"سحب اليوم بالدولار",wdPct:"نسبة السحب من الرصيد",wdDep:"نسبة السحب من الإيداع",rate:"معامل التحويل",nowEgp:"الرصيد بالجنيه",prEgp:"الربح بالجنيه",
 pl:"الأرباح والخسائر",lvl:"المستوى",lvlU:"المستوى بالدولار",pls:"ربح / خسارة",plU:"ربح / خسارة بالدولار",gap:"الرصيد الآن − المستوى",t10:"هدف 10%",t25:"هدف 25%",dd:"سحب 20% (Draw Down)",
-lot:"لوت",crisis:"كرايسس",gm:"جولد ماستر",hedge:"هدف التحوط 1",ss:"أمر بيع إيقاف",lotk:"لوت لكل 10K",
+lot:"لوت",crisis:"كرايسس",gm:"جولد ماستر",hedge:"هدف التحوط 1",ss:"أمر بيع إيقاف",lotk:"لوت لكل 10 آلاف",
 days:"بالأيام",week:"بالأسبوع",month:"بالشهر",inv:"المستثمر",wdr:"المسحوب",d:"يوم",w:"أسبوع",
 m1:"المعدل المطلوب",m2:"معدل اليوم",m3:"متوسط آخر الأيام",m4:"متوسط 60 يوم",rt:"المعدل",rr:"المُعاد استثماره",
 day:"اليوم",dt:"التاريخ",rtd:"النسبة %",bal:"الرصيد",avgL:"متوسط آخر الأيام",avg6:"متوسط الأيام المغلقة",hint:"اكتب نسبة اليوم الفعلية في أول خانة فارغة؛ باقي الأيام تُحسب بمعدل اليوم.",
@@ -81,9 +81,9 @@ const rnd=(x,d)=>{const f=10**d;return Math.sign(x)*Math.round(Math.abs(x)*f+1e-
 const trn=(x,d)=>{const f=10**d;return Math.sign(x)*Math.floor(Math.abs(x)*f+1e-9)/f};
 const sd=(a,b)=>b?a/b:0;
 const fmt=(n,d=2)=>isFinite(n)?n.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}):"∞";
-const BIG=[[1e18,"Qi"],[1e15,"Qa"],[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]];
-const AB={K:"ألف",M:"مليون",B:"مليار",T:"تريليون",Qa:"كوادريليون",Qi:"كوينتليون"};
-const big=n=>{const a=Math.abs(n);if(!isFinite(n)||a>=1e21)return"∞";for(const[v,s]of BIG)if(a>=v)return(n/v).toFixed(2)+(S.lang==="ar"?" "+AB[s]:s);return n.toFixed(2)};
+const BIG=[[1e33,"Dc"],[1e30,"No"],[1e27,"Oc"],[1e24,"Sp"],[1e21,"Sx"],[1e18,"Qi"],[1e15,"Qa"],[1e12,"T"],[1e9,"B"],[1e6,"M"],[1e3,"K"]];
+const AB={Dc:"ديسيليون",No:"نونيليون",Oc:"أوكتيليون",Sp:"سبتيليون",Sx:"سكستيليون",K:"ألف",M:"مليون",B:"مليار",T:"تريليون",Qa:"كوادريليون",Qi:"كوينتليون"};
+const big=n=>{const a=Math.abs(n);if(!isFinite(n)||a>=1e36)return"∞";for(const[v,s]of BIG)if(a>=v)return(n/v).toFixed(2)+(S.lang==="ar"?" "+AB[s]:s);return n.toFixed(2)};
 const pct=x=>(x*100).toFixed(2)+"%";
 const cls=n=>n<0?"r":n>0?"g":"";
 // ---- calendar
