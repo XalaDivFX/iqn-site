@@ -68,13 +68,15 @@ days:"By days",week:"By week",month:"By month",inv:"Invested",wdr:"Withdrawn",d:
 m1:"Wanted rate",m2:"Today’s rate",m3:"Last days average",m4:"60-day average",rt:"Rate",rr:"Reinvested",
 day:"Day",dt:"Date",rtd:"Rate %",bal:"Balance",avgL:"Last days average",avg6:"Closed days average",hint:"Enter the actual daily rate in the first empty row; later days use today’s rate.",
 hn:"Holiday",hd:"Date",hs:"Status",full:"Full close",early:"Early close (treated as holiday)",add:"Add holiday",del:"Delete",hnote:"Every date here counts as a holiday in Forex mode."}};
+Object.assign(TXT.ar,{tgt:"هدف الإغلاق T",amul:"مضاعف Auto",tfix:"هدف Fixed",tmode:"وضع الهدف (SelectStop)",gmk:"لوت جولد ماستر لكل 10 آلاف",blot:"لوت القاعدة يدويًا (0 = تلقائي)",aext:"مضاعف الصفقات الخارجية",lstep:"خطوة اللوت",lmin:"أقل لوت",lmax:"أقصى لوت (0 = بلا حد)",ext:"صفقات خارجية",blotl:"لوت القاعدة (Base Lot)",gmraw:"لوت جولد ماستر المحسوب",lnote:"اللوت = ⌊الرصيد ÷ 10000 × المعامل⌋. هدف Auto = لوت القاعدة × المضاعف، وFixed = الرقم الثابت.",lauto:"Auto (لوت القاعدة × مضاعف)",lfix:"Fixed (هدف ثابت)"});
+Object.assign(TXT.en,{tgt:"Close target T",amul:"Auto mult",tfix:"Fixed target",tmode:"Target mode (SelectStop)",gmk:"GoldMaster lot per 10K",blot:"Manual base lot (0 = auto)",aext:"External trades mult",lstep:"Lot step",lmin:"Min lot",lmax:"Max lot (0 = none)",ext:"External trades",blotl:"Base lot",gmraw:"Computed GoldMaster lot",lnote:"Lot = floor(balance / 10000 × factor). Auto target = base lot × mult; Fixed = the fixed number.",lauto:"Auto (base lot × mult)",lfix:"Fixed target"});
 const H=[["New Year","2026-01-01","f"],["MLK Day","2026-01-19","e"],["Presidents Day","2026-02-16","e"],["Good Friday","2026-04-03","f"],["Memorial Day","2026-05-25","e"],["Juneteenth","2026-06-19","e"],["Independence Day","2026-07-03","e"],["Labor Day","2026-09-07","e"],["Thanksgiving","2026-11-26","e"],["Black Friday","2026-11-27","e"],["Christmas Eve","2026-12-24","e"],["Christmas Day","2026-12-25","f"],
 ["New Year","2027-01-01","f"],["MLK Day","2027-01-18","e"],["Presidents Day","2027-02-15","e"],["Good Friday","2027-03-26","f"],["Memorial Day","2027-05-31","e"],["Juneteenth","2027-06-18","e"],["Independence Day","2027-07-05","e"],["Labor Day","2027-09-06","e"],["Thanksgiving","2027-11-25","e"],["Black Friday","2027-11-26","e"],["Christmas Eve","2027-12-24","f"],["Christmas Day","2027-12-25","f"],
 ["New Year","2028-01-01","f"],["MLK Day","2028-01-17","e"],["Presidents Day","2028-02-21","e"],["Good Friday","2028-04-14","f"],["Memorial Day","2028-05-29","e"],["Juneteenth","2028-06-19","e"],["Independence Day","2028-07-04","e"],["Labor Day","2028-09-04","e"],["Thanksgiving","2028-11-23","e"],["Black Friday","2028-11-24","e"],["Christmas Eve","2028-12-24","f"],["Christmas Day","2028-12-25","f"]].map(a=>({n:a[0],d:a[1],s:a[2]}));
-const DEF={lang:"ar",mode:"forex",tab:"acc",start:2000,now:5328.5,dep:3533,date:"2026-10-22",egp:54,eurusd:1.12095,want:0.5,dep0:27.06,reinv:0.7,mdays:0,u:{ac:"EUc",af:"EUR",uc:"USc",uf:"USD"},v:2,cur:"EUR",fx:{EUR:1.12095,GBP:1.3,CHF:1.25},depEgp:2139,lm0:"auto",lm1:"auto",lm2:"auto",lmg:"auto",lf0:25,lf1:15,lf2:10,lfg:1,lx0:1,lx1:1,lx2:1,lxg:1,pt0:100,pt1:20,pt2:30,ptg:100,days:[-0.2999,0.0942],hol:H};
+const DEF={lang:"ar",mode:"forex",tab:"acc",start:2000,now:5328.5,dep:3533,date:"2026-10-22",egp:54,eurusd:1.12095,want:0.5,dep0:27.06,reinv:0.7,mdays:0,u:{ac:"EUc",af:"EUR",uc:"USc",uf:"USD"},v:3,cur:"EUR",fx:{EUR:1.12095,GBP:1.3,CHF:1.25},depEgp:2139,tmode:"auto",lf0:10,lf1:7.5,lf2:5,lfg:1,blot:0,am0:40,am1:50,am2:100,aext:200,tf0:180,tf1:10,tf2:150,lstep:0.01,lmin:0.01,lmax:0,days:[-0.2999,0.0942],hol:H};
 let S=JSON.parse(JSON.stringify(DEF));
 try{const x=JSON.parse(localStorage.getItem("iqn")||"null");if(x)S=Object.assign(S,x,{u:Object.assign(S.u,x.u||{})})}catch(e){}
-if(S.v!==2){for(const k of Object.keys(DEF))if(/^(lm|lf|lx|pt)/.test(k))S[k]=DEF[k];S.v=2}if(S.tab==="lot")S.tab="acc";const save=()=>{try{localStorage.setItem("iqn",JSON.stringify(S))}catch(e){}};
+if(S.v!==3){for(const k of Object.keys(DEF))if(/^(tmode|lf|blot|am|aext|tf|lstep|lmin|lmax)/.test(k))S[k]=DEF[k];S.v=3}if(S.tab==="lot")S.tab="acc";const save=()=>{try{localStorage.setItem("iqn",JSON.stringify(S))}catch(e){}};
 const T=k=>TXT[S.lang][k]||k;
 // ---- math helpers (Excel semantics)
 const rnd=(x,d)=>{const f=10**d;return Math.sign(x)*Math.round(Math.abs(x)*f+1e-9)/f};
@@ -114,14 +116,15 @@ function calc(){
   const t10=S.start*1.1,t25=S.start*1.25;
   c.pl=[["t10",t10,t10-S.start,S.now-t10],["t25",t25,t25-S.start,S.now-t25]];
   c.pl=[[10,"t10"],[25,"t25"],[33,"t33"],[50,"t50"],[100,"t100"]].map(([p,k])=>{const lv=S.start*(1+p/100);return[k,lv,lv-S.start,S.now-lv]});
-  // lots
-  const lot=f=>trn(S.now/10000*f,2);
-  c.l1=[[S.lf0,100,0],[S.lf1,20,-1,"r"],[S.lf2,30,-1,"t"],[S.lf3,66.6,-1]].map(([f,m,d,t])=>{const L=lot(f);const v=L*m;return[L,t==="t"?trn(v,d):rnd(v,d)]});
-  c.l1[0][1]=rnd(c.l1[0][0]*100,0);
-  const L2=lot(S.lg);
-  c.l2=[["",L2,rnd(L2*100,0)],["Sell Stop @600",null,rnd(L2*10000,-2)],["hedge",null,rnd(L2*200,0)],["Sell Stop @101",null,rnd(L2*400,1)],["Sell Stop @102",null,rnd(L2*600,2)],["Sell Stop @103",null,rnd(L2*800,2)],["Sell Stop @104",null,rnd(L2*1000,-2)]];
-  const LT=(m,a,x,p)=>{const L=S[m]==="fixed"?S[x]:trn(S.now/10000*S[a],2);return[L,rnd(L*S[p],2)]};
-  c.q1=[0,1,2].map(i=>LT("lm"+i,"lf"+i,"lx"+i,"pt"+i));c.q2=[LT("lmg","lfg","lxg","ptg")];
+  // lots — iQn_CR_v2.16.mq5: CalcScaledLot + NormalizeLot + TargetForSlot
+  const nl=x=>{const st=S.lstep>0?S.lstep:0.01;let v=+(Math.floor(x/st+1e-8)*st).toFixed(8);if(S.lmin>0&&v<S.lmin)v=S.lmin;if(S.lmax>0&&v>S.lmax)v=S.lmax;return v};
+  const sl=f=>(S.now<=0||f<=0)?0:nl(S.now/10000*f);
+  const fixd=S.tmode==="fixed";
+  c.gmRaw=sl(S.lfg);
+  c.gmLot=S.blot>0?S.blot:c.gmRaw;
+  c.base=Math.max(c.gmLot,0.01);
+  c.q1=[0,1,2].map(i=>({n:i+1,f:S["lf"+i],lot:sl(S["lf"+i]),m:S["am"+i],T:fixd?Math.max(S["tf"+i],0.01):c.base*S["am"+i],ss:(fixd?2000:1000)+i+1}));
+  c.ext={m:S.aext,T:fixd?Math.max(S.tf0,0.01):c.base*S.aext};
   // 60 days
   let m=0;while(typeof S.days[m]==="number")m++;
   c.m=m;
@@ -163,10 +166,12 @@ function buildInputs(){
   for(const k of[])h+=`<label>${T("lotk")} ${T("crisis")} ${+k[2]+1}<input data-k="${k}" type="number" step="any" value="${S[k]}"></label>`;
   const sel=k=>`<select data-k="${k}"><option value="auto"${S[k]==="auto"?" selected":""}>Auto</option><option value="fixed"${S[k]==="fixed"?" selected":""}>Fixed</option></select>`;
   const ni=k=>`<input data-k="${k}" type="number" step="any" value="${S[k]}">`;
-  const lr=(n,i)=>`<tr><td>${n}</td><td>${sel("lm"+i)}</td><td>${ni("lf"+i)}</td><td>${ni("lx"+i)}</td><td>${ni("pt"+i)}</td></tr>`;
+  const lr=(n,i)=>`<tr><td>${n}</td><td>${ni("lf"+i)}</td><td>${ni("am"+i)}</td><td>${ni("tf"+i)}</td></tr>`;
   h+=`<label>${T("cur")}<select data-cur="1">${["EUR","GBP","CHF","USD","EGP"].map(x=>`<option${S.cur===x?" selected":""}>${x}</option>`).join("")}</select></label>`;
   if(S.cur!=="USD"&&S.cur!=="EGP")h+=`<label>1 ${S.cur} = ? USD<input data-fx="1" type="number" step="any" value="${S.fx[S.cur]}"></label>`;
-  h+=`<div class="wrap" style="grid-column:1/-1"><table><tr><th>${T("lotset")}</th><th>${T("lmode")}</th><th>${T("lauto")}</th><th>${T("lfix")}</th><th>${T("lpts")}</th></tr>`+lr(T("crisis")+" 1",0)+lr(T("crisis")+" 2",1)+lr(T("crisis")+" 3",2)+lr(T("gm"),"g")+`</table></div>`;
+  h+=`<label>${T("tmode")}<select data-k="tmode"><option value="auto"${S.tmode==="auto"?" selected":""}>${T("lauto")}</option><option value="fixed"${S.tmode==="fixed"?" selected":""}>${T("lfix")}</option></select></label>`+
+  `<label>${T("gmk")}${ni("lfg")}</label><label>${T("blot")}${ni("blot")}</label><label>${T("aext")}${ni("aext")}</label><label>${T("lstep")}${ni("lstep")}</label><label>${T("lmin")}${ni("lmin")}</label><label>${T("lmax")}${ni("lmax")}</label>`+
+  `<div class="wrap" style="grid-column:1/-1"><table><tr><th>${T("lotset")}</th><th>${T("lotk")}</th><th>${T("amul")}</th><th>${T("tfix")}</th></tr>`+lr(T("crisis")+" 1",0)+lr(T("crisis")+" 2",1)+lr(T("crisis")+" 3",2)+`</table></div>`;
   $("#inp").innerHTML=h;$("#inp [data-k=mode]").value=S.mode;
   $("#tabs").innerHTML=[["acc","tAcc"],["mod","tMod"],["day","tDay"],["hol","tHol"]].map(([k,t])=>`<button data-t="${k}" class="${S.tab===k?"on":""}">${T(t)}</button>`).join("");
   $("#bAr").className=S.lang==="ar"?"on":"";$("#bEn").className=S.lang==="en"?"on":"";
@@ -184,11 +189,7 @@ function render(){
     `</table></div><div class="rt"><div class="card key"><h2>${T("pl")}</h2><div class="wrap"><table><tr><th></th><th>${T("lvl")}</th><th>${T("lvlU")}</th><th>${T("pls")}</th><th>${T("plU")}</th><th>${T("gap")}</th></tr>`+
     c.pl.map(([k,lv,p,g])=>`<tr><td>${T(k)}</td><td class="num">${fmt(lv)}</td><td class="num">${fmt(sd(lv,c.f)/100)} ${U("uf")}</td><td class="num ${cls(p)}">${fmt(p)}</td><td class="num ${cls(p)}">${fmt(sd(p,c.f)/100)} ${U("uf")}</td><td class="num ${cls(g)}">${fmt(g)}</td></tr>`).join("")+`</table></div></div>`;
   }
-  if(S.tab==="acc"){
-    const F=[S.lf0,S.lf1,S.lf2,S.lf3];
-    h+=`<div class="cols"><div class="card"><h2>${T("crisis")}</h2><table><tr><th>${T("lot")}</th><th></th><th>${U("ac")}</th></tr>`+c.l1.map((x,i)=>`<tr><td class="num">${fmt(x[0])}</td><td class="d">×${F[i]}</td><td class="num y">${fmt(x[1])}</td></tr>`).join("")+
-    `</table></div><div class="card"><h2>${T("gm")}</h2><table><tr><th>${T("lot")}</th><th></th><th>${U("ac")}</th></tr>`+c.l2.map(x=>`<tr><td class="num">${x[1]==null?"":fmt(x[1])}</td><td>${x[0]==="hedge"?T("hedge"):x[0].replace("Sell Stop",T("ss"))}</td><td class="num y">${fmt(x[2])}</td></tr>`).join("")+`</table></div></div></div></div>`;
-  }
+  if(S.tab==="acc"){h+=`<div class="cols">`+lotsHtml(c)+`</div></div></div>`;}
   if(S.tab==="mod"){
     const ms=c.mods,m0=ms[0][1];
     const tr=(lab,get)=>`<tr><td>${lab}</td>`+ms.map(([k,m])=>{const x=get(m);return `<td class="num y gs">${big(x[1])}</td><td class="num g">${big(x[2])}</td>`}).join("")+`</tr>`;
@@ -238,11 +239,13 @@ document.addEventListener("click",e=>{
   else if(t.id==="bAr"||t.id==="bEn"){S.lang=t.id==="bAr"?"ar":"en";save();buildInputs();render()}
   else if(t.id==="bPng"||t.id==="bPdf")exp(t.id==="bPdf");
 });
-function fixAcc(c){
-  const o=$("#out"),k=o.querySelector(".key"),lc=o.querySelector(".rt .cols");if(k)o.prepend(k);if(!lc)return;
-  const rw=(x,i)=>`<tr><td class="num">${fmt(x[0])}</td><td class="d">×${S["pt"+i]}</td><td class="num y">${fmt(x[1])}</td></tr>`;
-  const tb=(t,rows)=>`<div class="card"><h2>${t}</h2><table><tr><th>${T("lot")}</th><th></th><th>${T("profit")} (${U("ac")})</th></tr>${rows}</table></div>`;
-  lc.innerHTML=tb(T("crisis"),c.q1.map((x,i)=>rw(x,i)).join(""))+tb(T("gm"),c.q2.map(x=>rw(x,"g")).join(""));
+function fixAcc(c){const k=$("#out").querySelector(".key");if(k)$("#out").prepend(k)}
+function lotsHtml(c){
+  const fx=S.tmode==="fixed",u=U("ac"),LD=Math.max(2,(String(S.lstep).split(".")[1]||"").length);
+  const rows=c.q1.map(x=>`<tr><td>${T("crisis")} ${x.n}</td><td class="num y">${fmt(x.lot,LD)}</td><td class="d">${x.f}</td><td class="num y">${fmt(x.T)}</td><td class="d">${fx?"—":"× "+x.m}</td><td class="d">@${x.ss}</td></tr>`).join("")+
+  `<tr><td>${T("ext")}</td><td class="num">—</td><td></td><td class="num y">${fmt(c.ext.T)}</td><td class="d">${fx?"—":"× "+c.ext.m}</td><td class="d">—</td></tr>`;
+  return `<div class="card"><h2>${T("crisis")}</h2><div class="wrap"><table><tr><th></th><th>${T("lot")}</th><th>${T("lotk")}</th><th>${T("tgt")} (${u})</th><th>${T("amul")}</th><th>${T("ss")}</th></tr>${rows}</table></div></div>`+
+  `<div class="card"><h2>${T("gm")}</h2><table>`+row(T("blotl"),fmt(c.base,LD),"y")+row(T("gmraw"),fmt(c.gmRaw,LD))+row(T("lotk"),S.lfg)+`</table><div class="d">${T("lnote")}</div></div>`;
 }
 function say(m){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";e.style.cssText="position:fixed;bottom:16px;inset-inline-start:16px;background:#1a1f26;border:1px solid #3d4651;padding:8px 12px;border-radius:8px;z-index:9";document.body.appendChild(e)}e.textContent=m;clearTimeout(e.t);e.t=setTimeout(()=>e.remove(),7000)}
 async function exp(pdf){
