@@ -37,7 +37,7 @@ td input{width:100%;min-width:56px}
 <body>
 <div id="main">
 <div class="bar"><h1 id="ttl"></h1><span style="flex:1"></span><button id="bNew" class="nox">دورة جديدة</button><button id="bPng" class="nox">PNG</button><button id="bPdf" class="nox">PDF</button></div>
-<div class="card"><h2>الإعدادات</h2><div class="grid" id="set"></div></div>
+<div class="card"><h2>الإعدادات <button id="bUpd" class="nox" style="margin-inline-start:10px">⟳ تحديث الأسعار من dwajn.net</button></h2><div class="grid" id="set"></div></div>
 <div id="out"></div>
 </div>
 <script>
@@ -51,7 +51,7 @@ const m=n=>fmt(n)+" جـ",kg=n=>fmt(n)+" ك",cls=n=>n<0?"r":n>0?"g":"";
 const tk=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
 const dtx=s=>{const p=(s||tk()).split("-");return fa(+p[2])+" "+MON[+p[1]-1]};
 const dtc=(at,iso)=>`<span class="dt">${dtx(iso)}<input type="date" ${at} value="${iso||tk()}" onclick="try{this.showPicker()}catch(e){}"></span>`;
-const DEF=()=>({date:"2026-05-25",live:"30",price:"55",w:"2",ton:"22400",sack:"25",start:"20",step:"5",ed:"؟؟؟؟؟",
+const DEF=()=>({date:"2026-05-25",live:"30",price:"65",w:"2",ton:"22750",sack:"25",start:"20",step:"5",ed:"؟؟؟؟؟",
 cap:[["دواجن","2026-05-25","18","31"],["توكتوك","2026-05-25","120","1"],["علف بادي","2026-05-26","585/25","25"],["علف نامي","2026-05-31","23","25"],["علف نامي","2026-06-11","22.8","25"],["دواء",tk(),"160","1"]].map(a=>({n:a[0],d:a[1],p:a[2],c:a[3]})),
 cyc:[["عربون علف","2026-05-26","500"],["طوب","2026-05-26","2.5"],["تروسيكل","2026-05-26","100"],["تحصينات","2026-05-26","40"],["4 لمبات + 3 دوايا","2026-05-26","250"],["ترموميتر","2026-05-26","40"],["مواصلات","2026-05-26","20"],["مواصلات","2026-05-31","60"]].map(a=>({n:a[0],d:a[1],p:a[2],c:""})),
 prev:[{n:"دواجن",d:"2026-05-08",p:"90",w:"32.4",c:"15",cost:"2403"}]});
@@ -92,6 +92,7 @@ document.addEventListener("click",e=>{const t=e.target,d=t.dataset;
   if(d.del){S[d.del].splice(+d.i,1);save();render()}
   else if(d.add){S[d.add].push(d.add==="prev"?{n:"دواجن",d:tk(),p:"",w:"",c:"",cost:""}:{n:"",d:tk(),p:"",c:""});save();render()}
   else if(t.id==="bNew")newCycle();
+  else if(t.id==="bUpd")getPrices();
   else if(t.id==="bPng"||t.id==="bPdf")exp(t.id==="bPdf")});
 function say(s){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";e.style.cssText="position:fixed;bottom:16px;inset-inline-start:16px;background:#1a1f26;border:1px solid #3d4651;padding:8px 12px;border-radius:8px;z-index:9";document.body.appendChild(e)}e.textContent=s;clearTimeout(e.t);e.t=setTimeout(()=>e.remove(),7000)}
 async function exp(pdf,name){
@@ -110,6 +111,17 @@ async function newCycle(){
   if(!confirm("سيتم حفظ الدورة الحالية كملف PDF ثم مسح المصاريف والمبيعات وعدد الفراخ وتاريخ الدورة. متأكد؟"))return;
   if(!await exp(true,"broiler-"+S.date))return;
   S.cap=[];S.cyc=[];S.prev=[];S.live="0";S.date=tk();S.ed="؟؟؟؟؟";save();buildSet();render()}
+async function getPrices(){
+  const u0="https://dwajn.net/",urls=[u0,"https://api.allorigins.win/raw?url="+encodeURIComponent(u0)];let html=null;
+  say("جارٍ جلب الأسعار…");
+  for(const u of urls){try{const c=new AbortController(),to=setTimeout(()=>c.abort(),10000);const r=await fetch(u,{signal:c.signal});clearTimeout(to);if(r.ok){const x=await r.text();if(x.includes("الفراخ البيضاء")){html=x;break}}}catch(e){}}
+  if(!html){say("تعذّر جلب الأسعار من الموقع — اكتبها يدويًا");return}
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  const find=k=>{for(const r of doc.querySelectorAll("tr")){const c=r.querySelectorAll("td,th");if(c.length>=2&&c[0].textContent.includes(k)){const mm=un(c[1].textContent).replace(/,/g,"").match(/[\d.]+/);if(mm&&+mm[0])return +mm[0]}}return 0};
+  const p=find("الفراخ البيضاء"),tn=find("الايمان");
+  if(!p&&!tn){say("الصفحة اتجابت لكن ملقتش الأسعار — اكتبها يدويًا");return}
+  if(p)S.price=String(p);if(tn)S.ton=String(tn);save();buildSet();render();
+  say("تم التحديث — فراخ بيضاء: "+fa(p||"—")+" · علف الإيمان: "+fa(tn||"—"))}
 buildSet();render();
 </script>
 </body>
